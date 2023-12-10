@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "description": "Onthis snap",
+  "proposedName": "Onthis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/template-snap-monorepo.git"
+  },
+  "source": {
+    "shasum": "rOCw13oIz+xeaB43uWDGII+UVAW2elC7TS5RnTsBcK8=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:ethereum-provider": {},
+    "snap_dialog": {},
+    "endowment:network-access": {},
+    "endowment:transaction-insight": {}
+  },
+  "manifestVersion": "0.1"
+}
