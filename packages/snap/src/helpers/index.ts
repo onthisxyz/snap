@@ -13,17 +13,16 @@ export const createSupabaseClient = async () => {
   );
 };
 
-export const estimateRewardPoints = async (
-  address: any,
+export const estimateRewardPoints = async (  
   value: any,
   validatedShortcutData: any,
   supabase: any,
-) => {
+):Promise<string>  => {
   const { data: stage } = await supabase
     .from('points_distribution_state')
     .select('*');
 
   return stage.length
     ? (value * validatedShortcutData.complexity * stage[0].stage_multiplier / 10**19).toFixed(0)
-    : 0;
+    : "0";
 };

@@ -7,14 +7,7 @@ import {
 } from './helpers';
 
 export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
-  const supabase = await createSupabaseClient();
-  const { data: shortcuts } = await supabase.from('shortcuts').select('*');
-  const validatedShortcutData = validateShortcut(
-    shortcuts,
-    transaction.to as string,
-  );
-  
-  if(chainId !== '1') {
+  if(chainId !== 'eip155:1') {
     return {
       content: panel([
         divider(),
@@ -25,9 +18,15 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
     };
   }
 
+  const supabase = await createSupabaseClient();
+  const { data: shortcuts } = await supabase.from('shortcuts').select('*');
+  const validatedShortcutData = validateShortcut(
+    shortcuts,
+    transaction.to as string,
+  );
+
   if (validatedShortcutData) {
-    const estimatedPoints = await estimateRewardPoints(
-      transaction?.to,
+    const estimatedPoints = await estimateRewardPoints(      
       transaction?.value,      
       validatedShortcutData,
       supabase
@@ -36,7 +35,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
       content: panel([
         text(`Shortcut: ${validatedShortcutData.ens_name}`),
         divider(),
-        text(`Contract: ${validatedShortcutData.address}`),
+        text(`Shortcut contract: ${transaction.to}`),
         divider(),
         text(`Verified by ONTHIS ✅`),        
         divider(),
@@ -47,7 +46,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
 
   return {
     content: panel([
-      text(`CONTRACT ${transaction?.to} IS NOT VERIFI12ED BY ONTHIS ❌`),
+      text(`CONTRACT ${transaction?.to} IS NOT VERIFIED BY ONTHIS ❌`),
       divider(),
       text(`Visit https://onthis.xyz/shortcuts`),
       text(`To see all verified shortcuts`),
