@@ -6,12 +6,15 @@ import {
   validateShortcut,
 } from './helpers';
 
-export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
-  if(chainId !== 'eip155:1') {
+export const onTransaction: OnTransactionHandler = async ({
+  transaction,
+  chainId,
+}) => {
+  if (chainId !== 'eip155:1') {
     return {
       content: panel([
         divider(),
-        text(`Shortcuts availabe ONLY`),        
+        text(`Shortcuts availabe ONLY`),
         text(`for MAINNET addresses`),
         divider(),
       ]),
@@ -26,10 +29,10 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
   );
 
   if (validatedShortcutData) {
-    const estimatedPoints = await estimateRewardPoints(      
-      transaction?.value,      
+    const estimatedPoints = await estimateRewardPoints(
+      transaction?.value,
       validatedShortcutData,
-      supabase
+      supabase,
     );
     return {
       content: panel([
@@ -37,9 +40,17 @@ export const onTransaction: OnTransactionHandler = async ({ transaction, chainId
         divider(),
         text(`Shortcut contract: ${transaction.to}`),
         divider(),
-        text(`Verified by ONTHIS ✅`),        
+        text(
+          ` ${
+            validatedShortcutData.desciption
+              ? ` Shortcut Description:` + validatedShortcutData.desciption
+              : ' '
+          }`,
+        ),
         divider(),
-        text(`Est. Points Receive: ${estimatedPoints}`)
+        text(`Verified by ONTHIS ✅`),
+        divider(),
+        text(`Est. Points Receive: ${estimatedPoints}`),
       ]),
     };
   }
