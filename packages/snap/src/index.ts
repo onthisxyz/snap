@@ -6,48 +6,58 @@ import {
   validateShortcut,
 } from './helpers';
 
-export const onTransaction: OnTransactionHandler = async ({ transaction, chainId }) => {
-  const supabase = await createSupabaseClient();
-  const { data: shortcuts } = await supabase.from('shortcuts').select('*');
-  const validatedShortcutData = validateShortcut(
-    shortcuts,
-    transaction.to as string,
-  );
-  
-  if(chainId !== '1') {
+export const onTransaction: OnTransactionHandler = async ({
+  transaction,
+  chainId,
+}) => {
+  if (chainId !== 'eip155:1') {
     return {
       content: panel([
         divider(),
-        text(`Shortcuts availabe ONLY`),        
+        text(`Shortcuts availabe ONLY`),
         text(`for MAINNET addresses`),
         divider(),
       ]),
     };
   }
 
+  const supabase = await createSupabaseClient();
+  const { data: shortcuts } = await supabase.from('shortcuts').select('*');
+  const validatedShortcutData = validateShortcut(
+    shortcuts,
+    transaction.to as string,
+  );
+
   if (validatedShortcutData) {
     const estimatedPoints = await estimateRewardPoints(
-      transaction?.to,
-      transaction?.value,      
+      transaction?.value,
       validatedShortcutData,
-      supabase
+      supabase,
     );
     return {
       content: panel([
         text(`Shortcut: ${validatedShortcutData.ens_name}`),
         divider(),
-        text(`Contract: ${validatedShortcutData.address}`),
+        text(`Shortcut contract: ${transaction.to}`),
         divider(),
-        text(`Verified by ONTHIS ✅`),        
+        text(
+          ` ${
+            validatedShortcutData.desciption
+              ? ` Shortcut Description:` + validatedShortcutData.desciption
+              : ' '
+          }`,
+        ),
         divider(),
-        text(`Est. Points Receive: ${estimatedPoints}`)
+        text(`Verified by ONTHIS ✅`),
+        divider(),
+        text(`Est. Points Receive: ${estimatedPoints}`),
       ]),
     };
   }
 
   return {
     content: panel([
-      text(`CONTRACT ${transaction?.to} IS NOT VERIFI12ED BY ONTHIS ❌`),
+      text(`CONTRACT ${transaction?.to} IS NOT VERIFIED BY ONTHIS ❌`),
       divider(),
       text(`Visit https://onthis.xyz/shortcuts`),
       text(`To see all verified shortcuts`),
