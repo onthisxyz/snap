@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { ethers } from 'ethers';
 
 export const validateShortcut = (shortcuts: any, to: string) => {
   return shortcuts.find(
@@ -26,13 +27,13 @@ export const estimateRewardPoints = async (
 
   return stage.length
     ? (
-        (value * validatedShortcutData.complexity * stage[0].stage_multiplier) /
-        10 ** 19
-      ).toFixed(0)
+      (value * validatedShortcutData.complexity * stage[0].stage_multiplier) /
+      10 ** 19
+    ).toFixed(0)
     : '0';
 };
 
-export const validateChain = (shortcutOriginChain: number, mmEip: string) => {
+export const getChainByEip = (mmEip: string) => {
   const chainIds = new Map([
     ['eip155:e708', 59144],
     ['eip155:a4b1', 42161],
@@ -42,7 +43,11 @@ export const validateChain = (shortcutOriginChain: number, mmEip: string) => {
     ['eip155:1', 1],
   ]);
 
-  const cId = chainIds.get(mmEip);
+  return chainIds.get(mmEip);
+
+}
+export const validateChain = (shortcutOriginChain: number, mmEip: string) => {
+  const cId = getChainByEip(mmEip);
 
   return cId == shortcutOriginChain;
 };
@@ -63,12 +68,25 @@ export const getNameByChainEip = (eip: string) => {
 export const getNameByChainId = (chainId: number) => {
   const address = new Map([
     [1, "Mainnet"],
-    [42161, "Arbitrum"],    
+    [42161, "Arbitrum"],
     [8453, "Base"],
     [10, "Optimism"],
     [137, "Polygon"],
-    [59144,'Linea']
+    [59144, 'Linea']
   ]);
 
   return address.get(chainId);
 };
+
+export const getEnsName = async (address: string) => {
+  const provider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.public.blastapi.io");
+  let ens;
+
+  try {
+    ens = await provider.lookupAddress(address);
+  } catch {
+    ens = null
+  }
+
+  return ens ? ens : 'Ens name not found'
+}

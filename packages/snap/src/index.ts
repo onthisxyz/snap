@@ -3,6 +3,8 @@ import { panel, text, divider } from '@metamask/snaps-ui';
 import {
   createSupabaseClient,
   estimateRewardPoints,
+  getChainByEip,
+  getEnsName,
   getNameByChainEip,
   getNameByChainId,
   validateChain,
@@ -12,7 +14,7 @@ import {
 export const onTransaction: OnTransactionHandler = async ({
   transaction,
   chainId,
-}) => {
+}: any) => {
   const supabase = await createSupabaseClient();
 
   const { data: onthisShortcuts, error: er1 } = await supabase
@@ -37,10 +39,7 @@ export const onTransaction: OnTransactionHandler = async ({
         divider(),
       ]),
     };
-    console.log('transaction?.to',transaction?.to)
-  console.log('onthisShortcuts', onthisShortcuts);
-  console.log('communityBridgeSwapShortcuts', communityBridgeSwapShortcuts);
-  console.log('communityEtfShortcuts', communityEtfShortcuts);
+
   if (
     !onthisShortcuts.length &&
     !communityBridgeSwapShortcuts.length &&
@@ -55,6 +54,19 @@ export const onTransaction: OnTransactionHandler = async ({
       ]),
     };
   }
+
+  if (
+    !getChainByEip(chainId)
+  ) {
+    return {
+      content: panel([
+        text(`YOUR CURRENT METAMASK NETWORK IS NOT SUPPORTED BUY ANY OF OUR SHORTCUTS ❌`),
+        divider(),
+        text(`Visit https://create.onthis.xyz/discover-shortcuts`),
+        text(`To see all available networks`),
+      ]),
+    };
+  }
   let dataToValidate = [];
 
   if (communityEtfShortcuts.length > 0) {
@@ -66,7 +78,7 @@ export const onTransaction: OnTransactionHandler = async ({
           ...i,
           desciption: `Swaps your native value at ${etfPools.map(
             (item: any) =>
-              `${item.pool} pool - ${item.percent * 10 ** 18}%`,
+              `${item.pool} pool - ${item.percent * 10 ** 18}% `
           )} at ${getNameByChainId(i.chain_id)}`,
         };
       }),
@@ -79,9 +91,8 @@ export const onTransaction: OnTransactionHandler = async ({
           ...i,
           desciption: `Bridges from ${getNameByChainId(
             i.origin_chain,
-          )} to ${getNameByChainId(i.destination_chain)} and swap at ${
-            i.pool
-          } pool`,
+          )} to ${getNameByChainId(i.destination_chain)} and swap at ${i.pool
+            } pool`,
         };
       }),
     );
@@ -89,12 +100,12 @@ export const onTransaction: OnTransactionHandler = async ({
   if (onthisShortcuts.length > 0) {
     dataToValidate.push(...onthisShortcuts);
   }
-  console.log('dataToValidate',dataToValidate)
+
   const validatedShortcutData = validateShortcut(
     dataToValidate,
     transaction.to as string,
   );
-  console.log('validatedShortcutData',validatedShortcutData)
+
   const cId = validatedShortcutData?.origin_chain
     ? validatedShortcutData?.origin_chain
     : validatedShortcutData?.chain_id;
@@ -103,7 +114,7 @@ export const onTransaction: OnTransactionHandler = async ({
     return {
       content: panel([
         divider(),
-        text(`This Shortcuts availabe ONLY at`),
+        text(`This Shortcut availabe ONLY at`),
         text(
           `${getNameByChainId(
             cId,
@@ -113,6 +124,7 @@ export const onTransaction: OnTransactionHandler = async ({
       ]),
     };
   }
+
   if (validatedShortcutData) {
     const estimatedPoints = await estimateRewardPoints(
       transaction?.value,
@@ -122,26 +134,21 @@ export const onTransaction: OnTransactionHandler = async ({
     return {
       content: panel([
         text(
-          `Shortcut: ${
-            validatedShortcutData.ens_name
-              ? validatedShortcutData.ens_name
-              : 'No ens name found'
-          }`,
+          await getEnsName(transaction.to),
         ),
         divider(),
         text(`Shortcut contract: ${transaction.to}`),
         divider(),
         text(
-          ` ${
-            validatedShortcutData.desciption
-              ? ` Shortcut Description:` + validatedShortcutData.desciption
-              : ' '
+          ` ${validatedShortcutData.desciption
+            ? ` Shortcut Description: ` + validatedShortcutData.desciption
+            : ' '
           }`,
         ),
         divider(),
         text(`Verified by ONTHIS ✅`),
         divider(),
-        text(`Est. Points Receive: ${estimatedPoints}`),
+        text(`Est. Points Received: ${estimatedPoints}`),
       ]),
     };
   }
