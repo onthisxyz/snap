@@ -4,10 +4,10 @@
   "proposedName": "Onthis",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/template-snap-monorepo.git"
+    "url": "https://github.com/onthisxyz/snap"
   },
   "source": {
-    "shasum": "5Q4sx4DP2tXwBGwV0T1jxZsdoHPBkUcMnZYQ7/xAR8o=",
+    "shasum": "fzJ+7OL9Lzwwv4uKHWNv9qKunTvLNNiP42Gd8HMva88=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

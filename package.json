@@ -1,7 +1,6 @@
 {
-  "name": "packcages",
+  "name": "onthis-snap",
   "version": "0.1.0",
-  "private": true,
   "description": "This repository demonstrates how to develop a snap with TypeScript. For detailed instructions, see [the MetaMask documentation](https://docs.metamask.io/guide/snaps.html#serving-a-snap-to-your-local-environment).",
   "homepage": "https://github.com/MetaMask/template-snap-monorepo#readme",
   "bugs": {
