@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Onthis snap",
   "proposedName": "Onthis",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/onthisxyz/snap"
   },
   "source": {
-    "shasum": "fzJ+7OL9Lzwwv4uKHWNv9qKunTvLNNiP42Gd8HMva88=",
+    "shasum": "DVflS/YIM2ZTokiganZWGKswQNbz9X1pdOEB3Z6IrcY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
