@@ -50,7 +50,7 @@ export const onTransaction: OnTransactionHandler = async ({
         text(`ADDRESS ${transaction?.to} IS NOT VERIFIED BY ONTHIS ❌`),
         divider(),
         text(`Visit https://onthis.xyz/shortcuts`),
-        text(`To see all verified shortcuts`),
+        text(`To see all verified contracts`),
       ]),
     };
   }
@@ -60,7 +60,7 @@ export const onTransaction: OnTransactionHandler = async ({
   ) {
     return {
       content: panel([
-        text(`YOUR CURRENT METAMASK NETWORK IS NOT SUPPORTED BUY ANY OF OUR SHORTCUTS ❌`),
+        text(`YOUR CURRENT METAMASK NETWORK IS NOT SUPPORTED ❌`),
         divider(),
         text(`Visit https://create.onthis.xyz/discover-shortcuts`),
         text(`To see all available networks`),
@@ -114,7 +114,7 @@ export const onTransaction: OnTransactionHandler = async ({
     return {
       content: panel([
         divider(),
-        text(`This Shortcut availabe ONLY at`),
+        text(`This contract availabe ONLY at`),
         text(
           `${getNameByChainId(
             cId,
@@ -137,11 +137,11 @@ export const onTransaction: OnTransactionHandler = async ({
           await getEnsName(transaction.to),
         ),
         divider(),
-        text(`Shortcut contract: ${transaction.to}`),
+        text(`Contract: ${transaction.to}`),
         divider(),
         text(
           ` ${validatedShortcutData.desciption
-            ? ` Shortcut Description: ` + validatedShortcutData.desciption
+            ? ` Description: ` + validatedShortcutData.desciption
             : ' '
           }`,
         ),
